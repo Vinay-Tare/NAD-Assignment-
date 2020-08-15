@@ -2,14 +2,14 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class Gauss_Seidal_Method {
+public class Gauss_Jacobi_Iteration_Method {
 
-	public static class Gauss_Seidal {
+	public static class Jacobi {
 
 	    public static final int MAX_ITERATIONS = 100;
 	    private double[][] M;
 
-	    public Gauss_Seidal(double [][] matrix) { M = matrix; }
+	    public Jacobi(double [][] matrix) { M = matrix; }
 
 	    public void print()
 	    {
@@ -76,6 +76,7 @@ public class Gauss_Seidal_Method {
 	        double[] X = new double[n]; // Approximations
 	        double[] P = new double[n]; // Prev
 	        Arrays.fill(X, 0);
+	        Arrays.fill(P, 0);
 
 	        while (true) {
 	            for (int i = 0; i < n; i++) {
@@ -83,12 +84,11 @@ public class Gauss_Seidal_Method {
 
 	                for (int j = 0; j < n; j++)
 	                    if (j != i)
-	                        sum -= M[i][j] * X[j];
-
-	                // Update x_i to use in the next row calculation
-	                X[i] = 1/M[i][i] * sum;   
+	                        sum -= M[i][j] * P[j];
+	                
+	                X[i] = 1/M[i][i] * sum;
 	            }
-	            
+
 	            System.out.print("X_" + iterations + " = {");
 	            for (int i = 0; i < n; i++)
 	                System.out.print(X[i] + " ");
@@ -137,23 +137,25 @@ public class Gauss_Seidal_Method {
 	        }
 
 
-	        Gauss_Seidal Gauss_Seidal = new Gauss_Seidal(M);
+	        Jacobi jacobi = new Jacobi(M);
 
-	        if (!Gauss_Seidal.makeDominant()) {
+	        if (!jacobi.makeDominant()) {
 	            writer.println("The system isn't diagonally dominant: " + 
 	                    "The method cannot guarantee convergence.");
 	        }
 
 	        writer.println();
-	        Gauss_Seidal.print();
-	        Gauss_Seidal.solve();
+	        jacobi.print();
+	        jacobi.solve();
 	    }
 	}
 }
 
+
 Output:
 
 # (1st Run)
+
 3
 1 2 3 14
 3 2 1 10
@@ -163,15 +165,15 @@ The system isn't diagonally dominant: The method cannot guarantee convergence.
 1.0 2.0 3.0 14.0 
 3.0 2.0 1.0 10.0 
 2.0 3.0 2.0 14.0 
-X_0 = {14.0 -16.0 17.0 }
-X_1 = {-5.0 4.0 6.0 }
-X_2 = {-12.0 20.0 -11.0 }
+X_0 = {14.0 5.0 7.0 }
+X_1 = {14.0 5.0 7.0 }
+X_2 = {-17.0 -19.5 -14.5 }
+X_3 = {96.5 37.75 53.25 }
 ...
 ...
-X_98 = {-12.0 20.0 -11.0 }
-X_99 = {7.0 0.0 0.0 }
+X_98 = {-7.811604549969776E47 -4.638576110026869E47 -4.845087920100023E47 }
+X_99 = {2.381241598035381E48 1.4139950785004675E48 1.476946871501008E48 }
 Reached Maxed No. Of Iterations ....But No Convergent Solution Found
-
 
 
 # (2nd Run)
@@ -185,13 +187,15 @@ The system isn't diagonally dominant: The method cannot guarantee convergence.
 5.0 -2.0 3.0 -1.0 
 -3.0 9.0 1.0 2.0 
 2.0 -1.0 -7.0 3.0 
-X_0 = {-0.2 0.15555555555555553 -0.5079365079365079 }
-X_1 = {0.16698412698412698 0.334320987654321 -0.42862181909800956 }
-X_2 = {0.19090148652053415 0.33348069762884575 -0.4216682463696825 }
-X_3 = {0.1863932268733478 0.3312053252210806 -0.4226312673534835 }
+X_0 = {-0.2 0.2222222222222222 -0.42857142857142855 }
+X_1 = {-0.2 0.2222222222222222 -0.42857142857142855 }
+X_2 = {0.146031746031746 0.20317460317460315 -0.5174603174603174 }
+X_3 = {0.1917460317460317 0.328395061728395 -0.4158730158730159 }
 ...
 ...
-X_16 = {0.18611987381703446 0.33123028391167175 -0.42271293375394325 }
-X_17 = {0.18611987381703465 0.3312302839116719 -0.42271293375394325 }
-Solution Found At Iteration :17 
-Solution is: X_17
+X_25 = {0.18611987381703832 0.3312302839116739 -0.4227129337539405 }
+X_26 = {0.18611987381703385 0.3312302839116728 -0.4227129337539424 }
+X_27 = {0.1861198738170346 0.33123028391167153 -0.4227129337539436 }
+X_28 = {0.18611987381703476 0.3312302839116719 -0.42271293375394314 }
+Solution Found At Iteration :28
+Solution is: X_28 
